@@ -35,7 +35,7 @@ body {
 }
 @media  (min-width: 900px) {
     #final_page {
-        width: 40% ;
+        width: 50% ;
     }
 }
 /*navigationbar*/
@@ -280,7 +280,7 @@ background-color: #0056b3;
     
     overflow: clip;
     width:-webkit-fill-available;
-    font-size: 30px;
+    
     
     height:100%;
     overflow-wrap: anywhere;
