@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js">
+    </script>
+
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script 
+        src="https://html2canvas.hertzen.com/dist/html2canvas.min.js">
+    </script>
+
+
+    <title>Responsive Live Rendering with Custom Font</title>
+    <link rel="stylesheet" href="final.css">
+</head>
+<body>
+    <!--navigation bar-->
+    <div class="navbar" id="navbar">
+        <button id="menu-button" onclick="navicon()"><img src="icons\menu.svg" alt="menu-button"></button>
+        <a href="#section1">Home</a>
+        <a href="#section2">Tools</a>
+        <a href="#FAQ">FAQs</a>
+        <a href="#section4">Contact</a>
+    </div>
+
+    
+</body>
+</html>
+<section id="section1">
+<!--header-->
+    <header class="bg-image">
+        <div id="summary">Your Words, Your Style: Save Time with Instant Text to Handwriting Conversion!</div>
+    </header>
+</section>
+
+<!--page-layout and customizations-->
+<div class="heading">Text to handwriting</div>
+<section id="section2">
+<div id="container-wrapper">
+    <div id="outer-container">
+        <div id="final_page">
+            <div id="shadow-effect">
+                <div id="heading_page">
+                    <div id="box">
+                        <div id="subbox"> </div>
+                        <div id="top-margin" contenteditable="true">Type your heading here </div>
+                    </div>
+                    <div id="content_page">
+                        <div id="left-margin" contenteditable="true">example</div>
+                        
+                        <div id="output-container">
+                            <div id="output-inner-container" >
+                                <!-- Output will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="input-container1">
+        <div id="input-container" class="input-boxes">
+            
+            <div class="input-box">
+                <div class="input-row">
+                    <label for="font-size-input">Font Size:</label>
+                    <input type="number" id="font-size-input" placeholder="Enter Font Size">
+                </div>
+                <div class="input-row">
+                    <label for="font-color-input">Font Color:</label>
+                    <input type="color" id="font-color-input" value="#000000">
+                </div>
+                <div class="input-row">
+                    <label for="top-margin-font-size-input" >heading Font Size:</label>
+                    <input type="number" id="top-margin-font-size-input"  placeholder="Enter heading Font Size">
+                </div>
+                
+               
+                <div class="input-row">
+                    <label for="font-family-select">Font :</label>
+                    <select id="font-family-select" oninput="changeFontFamily()">
+                        <option value="AnotherFont">Font1</option>
+                        <option value="CustomFont">Font2</option>
+                        
+                        <option value="font3">Font3</option>
+                        <!-- Add more font options as needed -->
+                    </select>
+                </div>
+                <div class="input-row">
+                    <label for="font-file-input" class="file-button">Font File (.ttf):</label>
+                    <input type="file" id="font-file-input" accept=".ttf" oninput="changeFontfile()">
+                </div>
+                
+                
+            </div>
+            <div class="input-box">
+                
+                <div class="input-row">
+                    <label for="margin-top-input">input_top_margin:</label>
+                    <input type="number" id="margin-top-input" placeholder="Enter input top margin">
+                </div>
+                <div class="input-row">
+                    <label for="margin-left-input">input_left_margin:</label>
+                    <input type="number" id="margin-left-input" placeholder="Enter input left margin">
+                </div>
+                <div class="input-row">
+                    <label for="toggle-left-margin">left_margin:</label>
+                    <input  type="checkbox" id="toggle-left-margin" checked aria-checked="true"  onclick="toggleLeftMargin()">
+                    <label for="toggle-top-margin">top_margin:</label>
+                    <input type="checkbox" id="toggle-top-margin" checked aria-checked="true"  onclick="toggleTopMargin()">
+                </div>
+                <div class="input-row">
+                    <label for="height-input">top_margin Height:</label>
+                    <input type="number"  min="10" max="30" id="height-input" placeholder="Enter Height">
+                </div>
+                <div class="input-row">
+                    <label for="width-input">left_margin Width:</label>
+                    <input type="number"  min="10" max="30" id="width-input" placeholder="Enter Width">
+                </div>
+                
+            </div>
+            <div class="input-box">
+                <div class="input-row">
+                    <label for="line-spacing-text-input">input line spacing:</label>
+                    <input type="number" id="line-spacing-text-input" placeholder="Enter input line  spacing">
+                </div>
+                <div class="input-row">
+                    <label for="line-spacing-input">paper line spacing:</label>
+                    <input type="number" id="line-spacing-input" placeholder="Enter paper line spacing">
+                </div>
+                <div class="input-row">
+                    <label for="letter-spacing-input">Letter Spacing:</label>
+                    <input type="number" id="letter-spacing-input" placeholder="Enter Letter Spacing">
+                </div>
+                <div class="input-row">
+                    <label for="word-spacing-input">Word Spacing:</label>
+                    <input type="number" id="word-spacing-input" placeholder="Enter Word Spacing">
+                </div>
+                
+                
+            </div>
+            <div class="input-box">
+                
+                <div class="input-row">
+                    <label for="background-color-input">Background Color:</label>
+                    <input type="color" id="background-color-input" value="#ffffff">
+                </div>
+                <div class="input-row">
+                   <label for="background-image-input" class="file-button">Background Image:</label>
+                    <input type="file" id="background-image-input" accept="image/*" oninput="changeBackgroundImage()">
+                </div>
+                <div class="input-row">
+                    <button id="remove-button" class="buttontype_1" style="display: none;" onclick="removeBackgroundImage()">Remove</button>
+                </div>
+                <div class="input-row">
+                    <label for="bg-toggle">Background Lines:</label>
+                    <input type="checkbox" id="bg-toggle" checked aria-checked="true" oninput="toggleBackground()">
+                </div>
+                <div class="input-row">
+                    <label for="shadow">shadow effect:</label>
+                    <input type="checkbox" id="shadow" checked aria-checked="true" oninput=" Shadow()">
+                </div>
+                <div class="input-row">
+                    <label for="quality-input">Image Quality:</label>
+                    <input type="number"  min="0" max="6" id="quality-input" placeholder="Enter Image Quality">
+                </div>
+            </div>
+            
+                <div class="input-box textarea-box">
+                    
+                    <div class="input-row">
+                        <textarea id="mixed-input" rows="4" placeholder="Enter Text and LaTeX here" oninput="convertToHTML()"></textarea>
+                    </div>
+                </div>
+                
+                
+            
+        </div>
+        </div>
+    </div>
+    
+    
+    
+</div>
+</section>
+<!--buttons contaier-->
+<div class="button-container">
+    <button class="buttontype_2" onclick="generateAndPreview()">Generate Image</button>
+    <button class="buttontype_2" onclick="openDrawingContainer()">Draw</button>
+</div>
+
+<div id="images-store-container">
+    <!-- The queue container where images and download buttons will be added -->
+
+    <p id="images-store-container-text">Click "Generate Image" Button to generate new image</p>
+</div>
+
+<div class="button-container">       
+    <button class="buttontype_2" onclick="generatePDF()">Generate PDF</button>
+    <button class="buttontype_2" onclick="clearAllImages()">Clear All Images</button>
+</div>
+
+
+
+
+
+<!--drawing container and their popup containers-->
+<div id="drawing_popup" class="overlay" style="display: none;">
+    <div class="drawing-container">
+        <canvas id="drawing-canvas" width="800" height="600" ></canvas>
+        
+    </div>
+    <div id="drawing-controls">
+        <div id="icons">
+        
+        <button id="color-picker-button" onclick="openColorPicker()">
+            <img src="icons/color.svg" alt="Color Picker">color
+        </button>
+        <input type="color" id="drawing-color" value="#000000" style="display: none;" onchange="changeDrawingColor(value)">
+        
+        
+        <button onclick="shape('pen')"><img src="icons\pen.svg" alt="pen">pen</button>
+        <button onclick="shape('eraser')"><img src="icons\eraser.svg" alt="eraser">eraser</button>
+        <button onclick="shape('line')"><img src="icons/line.svg" alt="line">line</button>
+        <button onclick="shape('circle')"><img src="icons\circle.svg" alt="circle">circle</button>
+        <button onclick="shape('rectangle')"><img src="icons\rectangle.svg" alt="rectangle">rectangle</button>
+        <button onclick="undo()"><img src="icons\undo.svg" alt="undo">undo</button>
+        <button onclick="redo()"><img src="icons\redo.svg" alt="redo">redo</button>
+        <button onclick="saveDrawing()"><img src="icons\save.svg" alt="save">save</button>
+        
+        <button onclick="openImageUploadPopup()"><img src="icons\upload.svg" alt="upload">upload</button>
+
+        <button onclick="clearDrawing()"><img src="icons/reset.svg" alt="reset">Clear</button>
+        <button onclick="addDrawingToOutput()"><img src="icons\done.svg" alt="done">Add to paper</button>
+        <button onclick="closePopup()"><img src="icons\close.svg" alt="close">close</button>
+        </div>
+        <div id="sliders">
+        <label for="canvas-width">Canvas Width:</label>
+        <input type="range" id="canvas-width" min="0" max="100" value="60">
+        <label for="canvas-height">Canvas Height:</label>
+        <input type="range" id="canvas-height" min="0" max="100" value="60">
+        <label for="drawing-size">drawing-size:</label>
+        <input type="range" id="drawing-size" min="1" max="30" value="5" onchange="changeDrawingSize(value)">
+        </div>
+       
+
+    </div>
+</div>
+<div id="popup-image" class="popup">
+    <div class="popup-image-content">
+        <button class="buttontype_1" onclick="closePopupimage()">close</button>
+        <div id="input-row">
+        <label for="image-upload" class="file-button">upload Image:</label>
+        <input style="display: none;" type="file" id="image-upload" accept="image/*">
+    </div>
+        <button class="buttontype_1" onclick="drawImage()">Set Property</button>
+        <label for="image-x">X Position %:</label>
+        <input type="number" id="image-x" min="0" max="100" value="0">
+        <label for="image-y">Y Position %:</label>
+        <input type="number" min="0" max="100" id="image-y" value="0">
+        <label for="image-width">Size %:</label>
+        <input type="number" min="0" max="100" id="image-width" value="30">
+        
+         
+    </div>
+</div>
+<div id="popup-output" class="overlay" style="display: none;">
+    <div class="popup-content">
+        <h3>Set Image Properties</h3>
+        <label for="floatInput">paper side:</label>
+        <select id="floatInput">
+            <option value="none">None</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+        </select>
+        <br>
+        <label for="widthInput">Width:</label>
+        <select id="widthInput">
+            <option value="25%">25%</option>
+            <option value="40%">40%</option>
+            <option value="50%">50%</option>
+            <option value="75%">75%</option>
+            <option value="100%">100%</option>
+        </select>
+        <br>
+        <button class="buttontype_1" onclick="setProperties()">Set</button>
+    </div>
+</div>
+
+<!--faq section-->
+<div class="heading">FAQs</div>
+<div id="FAQ">
+    <div class="faq">
+        <div class="question">Q1. How can I create my own font?</div>
+        <div class="answer">You can find resources and tools on the internet to create your own font.</div>
+    </div>
+
+    <div class="faq">
+        <div class="question">Q2. Why aren't mathematical equations changing to my  font after uploading?</div>
+        <div class="answer">Your font may not contain glyphs for mathematical symbols. In such cases, the equations will default to a system or fallback font that includes mathematical symbols. Ensure your font includes mathematical glyphs for them to display correctly.</div>
+    </div>
+
+    <div class="faq">
+        <div class="question">Q3. How do I report a problem, issue, or provide feedback?</div>
+        <div class="answer">You can contact me directly via my WhatsApp channel (<a href="https://whatsapp.com/channel/0029Va72X0FI7BeKpmvbvO0e">channel link</a>) or email.</div>
+    </div>
+
+    <div class="faq">
+        <div class="question">Q4. Can I use it on mobile devices?</div>
+        <div class="answer">Yes, you can use it on mobile devices, but for the best experience, desktop use is recommended.</div>
+    </div>
+
+    <div class="faq">
+        <div class="question">Q5. How do I write mathematical equations in the input?</div>
+        <div class="answer">
+            You can write equations in LaTeX format. They will automatically render as original equations. If they are not rendered, enclose LaTeX equations with "$" signs, for example, "$ your LaTeX equation $".
+        </div>
+    </div>
+    
+    <div class="faq">
+        <div class="question">Q6. When I add an image to my paper, Why it shows as 'img1', 'img2', etc. How can I change the position of images on my paper?</div>
+        <div class="answer">When you add an image, it is referenced by its number in the input, such as 'img 1'. You can move an image to any position on your paper by typing its reference at that position in the input. To remove an image, simply delete its reference from the input.</div>
+    </div>
+    <div class="faq">
+        <div class="question">Q7. How can I align the text with the background paper lines?</div>
+        <div class="answer">If your text does not contain any complex equations, you can align it by setting the paper line spacing and input line spacing values to be equal or in a ratio, for example, 21. Note that the values must be equal or in ratio. If your text contains equations, it cannot be aligned because equal spacing is not available for that. In that case, you have to use paper without lines.</div>
+    </div>
+
+</div>
+
+<!--footer-->
+<footer id="section4">
+    <p>-  Connect with me  -</p>
+    <p>
+        <a href="https://github.com/mahipal123456" target="_blank">GitHub</a> |
+        <a href="https://www.linkedin.com/in/mahipalkumawat810/" target="_blank">LinkedIn</a> |
+        <a href="https://whatsapp.com/channel/0029Va72X0FI7BeKpmvbvO0e" target="_blank">whatsapp</a> |
+        <a href="mailto:mahipalkumawat810@gmail.com">Email</a> 
+
+    </p>
+</footer>
+
+
+
+<script src="final.js"></script>
