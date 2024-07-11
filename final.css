@@ -24,6 +24,26 @@ body {
     src: url('fonts/farewell.ttf') format('truetype');
     /* Add the path or link to another font file */
 }
+@font-face {
+    font-family: 'font4';
+    src: url('fonts/font4.ttf') format('truetype');
+    /* Add the path or link to another font file */
+}
+@font-face {
+    font-family: 'font5';
+    src: url('fonts/font5.ttf') format('truetype');
+    /* Add the path or link to another font file */
+}
+@font-face {
+    font-family: 'font6';
+    src: url('fonts/font6.ttf') format('truetype');
+    /* Add the path or link to another font file */
+}
+@font-face {
+    font-family: 'font7';
+    src: url('fonts/font7.ttf') format('truetype');
+    /* Add the path or link to another font file */
+}
 @media  (max-width: 900px) {
     #input-container1 {
         flex-basis: 100% !important;
