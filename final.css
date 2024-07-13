@@ -445,10 +445,11 @@ background-color: #0056b3;
 }
 
 
- /* Override MathJax styles to use the custom font */
- body .MJXc-TeX-size1-R,body .MJXc-TeX-main-R,body .MJXc-TeX-math-I,body .MJXc-TeX-size2-R,body .MJXc-TeX-main-B,body .MJXp-math  {
-    font-family: 'CustomFont';
+ /* Override katex styles to use the custom font */
+.katex .mathdefault,.katex .op-symbol.small-op,.katex{
+    font-family: 'AnotherFont','CustomFont';
 }
+
 
 /*drawing canvas and their popup containers*/
 .drawing-container {
