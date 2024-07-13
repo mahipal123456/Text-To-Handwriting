@@ -219,12 +219,7 @@ function navicon() {
             document.getElementById('remove-button').style.display = 'none'; // Hide the remove button
         }
         // Function to apply the custom font to MathJax elements
-function applyCustomFontToMathJax(fontFamily) {
-    var mathJaxElements = document.querySelectorAll('.MathJax, .MJXc-TeX-size1-R, .MJXc-TeX-main-R, .MJXc-TeX-math-I, .MJXc-TeX-size2-R, .MJXc-TeX-main-B, .MJXp-math');
-    mathJaxElements.forEach(function(element) {
-        element.style.fontFamily = fontFamily;
-    });
-}
+
 
 var customFontUploaded = false;
 var uploadedFontFamily = '';
@@ -234,7 +229,7 @@ function applyCustomFontToMathJax(font, fallbackfont) {
     var effectiveFont = customFontUploaded ? uploadedFontFamily : font;
     var useDefaultMathFont = document.getElementById('default-math-font-checkbox').checked;
 
-    var mathJaxElements = document.querySelectorAll('.katex .mathdefault, .katex .op-symbol.small-op, .katex');
+    var mathJaxElements = document.querySelectorAll('.katex .mathdefault,.katex .op-symbol.small-op,.katex,.katex .mathbf,.katex .delimsizing.size2');
     mathJaxElements.forEach(function(element) {
         if (useDefaultMathFont) {
             element.style.fontFamily = 'CustomFont';
