@@ -56,48 +56,46 @@ function navicon() {
 
         let imagesArray = [];
 
-        function convertToHTML() {
-    const mixedInput = document.getElementById('mixed-input').value;
-    const outputContainer = document.getElementById('output-inner-container');
-    //const existingImages = imagesArray.slice();
-
-    while (outputContainer.firstChild) {
-        outputContainer.removeChild(outputContainer.firstChild);
-    }
-
-    const chunks = mixedInput.split(/\$(.*?)\$/g);
-
-    chunks.forEach((chunk, index) => {
-        if (index % 2 === 0) {
-            const formattedChunk = chunk.replace(/  +/g, match => Array(match.length).fill('\u00A0').join(''));
-            outputContainer.appendChild(document.createTextNode(formattedChunk));
-        } else {
-            const script = document.createElement('script');
-            script.type = 'math/tex';
-            script.text = chunk;
-            outputContainer.appendChild(script);
+       function convertToHTML() {
+            const mixedInput = document.getElementById('mixed-input').value;
+            const outputContainer = document.getElementById('output-inner-container');
+            //const existingImages = imagesArray.slice();
+        
+            while (outputContainer.firstChild) {
+                outputContainer.removeChild(outputContainer.firstChild);
+            }
+        
+            const chunks = mixedInput.split(/\$(.*?)\$/g);
+        
+            chunks.forEach((chunk, index) => {
+                if (index % 2 === 0) {
+                    const formattedChunk = chunk.replace(/  +/g, match => Array(match.length).fill('\u00A0').join(''));
+                    outputContainer.appendChild(document.createTextNode(formattedChunk));
+                } else {
+                    const katexSpan = document.createElement('span');
+                    try {
+                        katex.render(chunk, katexSpan, { throwOnError: false });
+                        outputContainer.appendChild(katexSpan);
+                    } catch (e) {
+                        console.error('Error rendering LaTeX with KaTeX:', e);
+                    }
+                }
+            });
+        
+            let outputHtml = outputContainer.innerHTML;
+            const imgRegex = /img(\d+)/g;
+        
+            let match;
+            while ((match = imgRegex.exec(outputHtml)) !== null) {
+                const imgIndex = parseInt(match[1]) - 1;
+                if (imagesArray[imgIndex]) {
+                    outputHtml = outputHtml.replace(match[0], imagesArray[imgIndex].outerHTML);
+                }
+            }
+        
+            outputContainer.innerHTML = outputHtml;
         }
-    });
-
-    if (typeof MathJax !== 'undefined') {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, outputContainer]);
-    } else {
-        console.error('MathJax is not defined. Check if the MathJax script is loaded properly.');
-    }
-
-    let outputHtml = outputContainer.innerHTML;
-    const imgRegex = /img(\d+)/g;
-
-    let match;
-    while ((match = imgRegex.exec(outputHtml)) !== null) {
-        const imgIndex = parseInt(match[1]) - 1;
-        if (imagesArray[imgIndex]) {
-            outputHtml = outputHtml.replace(match[0], imagesArray[imgIndex].outerHTML);
-        }
-    }
-
-    outputContainer.innerHTML = outputHtml;
-}
+        
 
 
 
@@ -231,14 +229,31 @@ function applyCustomFontToMathJax(fontFamily) {
 var customFontUploaded = false;
 var uploadedFontFamily = '';
 
+// Function to apply custom font to MathJax elements
 function applyCustomFontToMathJax(font, fallbackfont) {
     var effectiveFont = customFontUploaded ? uploadedFontFamily : font;
-    var mathJaxElements = document.querySelectorAll('.MathJax, .MJXc-TeX-size1-R, .MJXc-TeX-main-R, .MJXc-TeX-math-I, .MJXc-TeX-size2-R, .MJXc-TeX-main-B, .MJXp-math');
+    var useDefaultMathFont = document.getElementById('default-math-font-checkbox').checked;
+
+    var mathJaxElements = document.querySelectorAll('.katex .mathdefault, .katex .op-symbol.small-op, .katex');
     mathJaxElements.forEach(function(element) {
-        element.style.fontFamily = effectiveFont + fallbackfont;
+        if (useDefaultMathFont) {
+            element.style.fontFamily = 'CustomFont';
+        } else {
+            element.style.fontFamily = effectiveFont + fallbackfont;
+        }
     });
 }
-
+function toggleMathFont() {
+    document.getElementById('default-math-font-checkbox').addEventListener('change', function() {
+        const isChecked = this.checked;
+        const elements = document.querySelectorAll('.katex .mathdefault, .katex .op-symbol.small-op, .katex');
+        elements.forEach(element => {
+            if (isChecked) {
+                element.style.fontFamily = 'customfont';
+            } 
+        });
+    });
+}
 function changeFontfile(elementId, fontFamily) {
     var fileInput = document.getElementById('font-file-input');
     if (!fileInput.files[0]) {
@@ -279,10 +294,9 @@ function changeFontfile(elementId, fontFamily) {
             heading_page.style.fontFamily = fontFamily + ', CustomFont';
 
             // Hook into MathJax rendering events
-            MathJax.Hub.Queue(function() {
-                MathJax.Hub.Register.MessageHook("End Process", function() {
-                    applyCustomFontToMathJax(fontFamily, ', CustomFont');
-                });
+           
+            document.getElementById('mixed-input').addEventListener('input', function() {
+                applyCustomFontToMathJax(fontFamily, ', CustomFont');
             });
 
             // Reset file input to clear the previously uploaded file
@@ -315,14 +329,16 @@ function changeFontFamily() {
     var heading_page = document.getElementById('heading_page');
     outputContainer.style.fontFamily = selectedFont + ', CustomFont';
     heading_page.style.fontFamily = selectedFont + ', CustomFont';
-
-    // Ensure MathJax applies the selected font after re-rendering
-    MathJax.Hub.Queue(function() {
-        MathJax.Hub.Register.MessageHook("End Process", function() {
-            applyCustomFontToMathJax(selectedFont, ', CustomFont');
-        });
+    document.getElementById('mixed-input').addEventListener('input', function() {
+        applyCustomFontToMathJax(selectedFont, ', CustomFont');
     });
+
+    
 }
+
+
+document.addEventListener('DOMContentLoaded', changeFontFamily());
+
 
 
 
