@@ -446,7 +446,7 @@ background-color: #0056b3;
 
 
  /* Override katex styles to use the custom font */
-.katex .mathdefault,.katex .op-symbol.small-op,.katex{
+.katex .mathdefault,.katex .op-symbol.small-op,.katex,.katex .mathbf,.katex .delimsizing.size2 {
     font-family: 'AnotherFont','CustomFont';
 }
 
