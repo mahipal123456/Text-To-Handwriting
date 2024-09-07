@@ -214,7 +214,11 @@ border: 1px solid #ccc;
 border-radius: 3px;
 font-size: 10px;
 
-width: -webkit-fill-available;
+width: 100%; /* Fallback for older browsers */
+width: -moz-available; /* Firefox */
+width: -webkit-fill-available; /* Chrome, Safari, Edge */
+width: fill-available; /* Standard *
+    
 
 }
 
@@ -299,7 +303,10 @@ background-color: #0056b3;
 #top-margin{
     
     overflow: clip;
-    width:-webkit-fill-available;
+    width: 100%; /* Fallback for older browsers */
+    width: -moz-available; /* Firefox */
+    width: -webkit-fill-available; /* Chrome, Safari, Edge */
+    width: fill-available; /* Standard *
     
     
     height:100%;
