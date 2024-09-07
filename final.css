@@ -217,7 +217,7 @@ font-size: 10px;
 width: 100%; /* Fallback for older browsers */
 width: -moz-available; /* Firefox */
 width: -webkit-fill-available; /* Chrome, Safari, Edge */
-width: fill-available; /* Standard *
+width: fill-available; /* Standard */
     
 
 }
@@ -306,7 +306,7 @@ background-color: #0056b3;
     width: 100%; /* Fallback for older browsers */
     width: -moz-available; /* Firefox */
     width: -webkit-fill-available; /* Chrome, Safari, Edge */
-    width: fill-available; /* Standard *
+    width: fill-available; /* Standard */
     
     
     height:100%;
