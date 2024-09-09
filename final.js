@@ -150,7 +150,7 @@ function navicon() {
         let topMarginOn = true;
         function toggleLeftMargin() {
             leftMarginOn = !leftMarginOn;
-            document.getElementById('toggle-left-margin').textContent = 'Left Margin: ' + (leftMarginOn ? 'ON' : 'OFF');
+            //document.getElementById('toggle-left-margin').textContent = 'Left Margin: ' + (leftMarginOn ? 'ON' : 'OFF');
             var leftMargin = document.getElementById('left-margin');
            
             var topMargin = document.getElementById('top-margin');
@@ -179,7 +179,7 @@ function navicon() {
         // Toggle top margin
         function toggleTopMargin() {
             topMarginOn = !topMarginOn;
-            document.getElementById('toggle-top-margin').textContent = 'Top Margin: ' + (topMarginOn ? 'ON' : 'OFF');
+            //document.getElementById('toggle-top-margin').textContent = 'Top Margin: ' + (topMarginOn ? 'ON' : 'OFF');
             var topMargin = document.getElementById('box');
             topMargin.style.display = topMargin.style.display === 'none' ? 'flex' : 'none';
         }
