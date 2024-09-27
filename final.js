@@ -259,50 +259,64 @@ function changeFontfile(elementId, fontFamily) {
     var reader = new FileReader();
     reader.onload = function(e) {
         var fontData = e.target.result;
-        var fontFace = new FontFace(fontFamily, fontData);
 
-        fontFace.load().then(function(loadedFontFace) {
-            // Remove previous custom font if any
-            if (window.customFontFace) {
-                document.fonts.delete(window.customFontFace);
+        // Convert ArrayBuffer to Base64 for CSS @font-face
+        var base64FontData = arrayBufferToBase64(fontData);
+        var fontFaceRule = `
+            @font-face {
+                font-family: '${fontFamily}';
+                src: url(data:font/truetype;base64,${base64FontData}) format('truetype');
             }
+        `;
 
-            document.fonts.add(loadedFontFace);
-            window.customFontFace = loadedFontFace;  // Store the new custom font
+        // Remove previous custom font-face rule if any
+        if (window.customFontStyle) {
+            window.customFontStyle.remove();
+        }
 
-            customFontUploaded = true;
-            uploadedFontFamily = fontFamily;
+        // Create a new style element to inject @font-face rule
+        var style = document.createElement('style');
+        style.innerHTML = fontFaceRule;
+        document.head.appendChild(style);
+        window.customFontStyle = style;  // Store the new custom font style
 
-            // Apply the new font to the specified element
-            var element = document.getElementById(elementId);
-            if (element) {
-                element.style.fontFamily = fontFamily;
-            }
+        // Apply the new font to the specified element
+        var element = document.getElementById(elementId);
+        if (element) {
+            element.style.fontFamily = fontFamily;
+        }
 
-            // Apply custom font to MathJax elements
+        // Apply custom font to MathJax elements (if needed)
+        applyCustomFontToMathJax(fontFamily, ', CustomFont');
+
+        // Set the font for the output container and heading page
+        var outputContainer = document.getElementById('output-inner-container');
+        var heading_page = document.getElementById('heading_page');
+        outputContainer.style.fontFamily = fontFamily + ', CustomFont';
+        heading_page.style.fontFamily = fontFamily + ', CustomFont';
+
+        // Hook into MathJax rendering events
+        document.getElementById('mixed-input').addEventListener('input', function() {
             applyCustomFontToMathJax(fontFamily, ', CustomFont');
-
-            // Also, set the font for the output container and heading page
-            var outputContainer = document.getElementById('output-inner-container');
-            var heading_page = document.getElementById('heading_page');
-            outputContainer.style.fontFamily = fontFamily + ', CustomFont';
-            heading_page.style.fontFamily = fontFamily + ', CustomFont';
-
-            // Hook into MathJax rendering events
-           
-            document.getElementById('mixed-input').addEventListener('input', function() {
-                applyCustomFontToMathJax(fontFamily, ', CustomFont');
-            });
-
-            // Reset file input to clear the previously uploaded file
-            fileInput.value = "";
-        }).catch(function(error) {
-            console.error('Font failed to load:', error);
         });
+
+        // Reset file input to clear the previously uploaded file
+        fileInput.value = "";
     };
+
     reader.readAsArrayBuffer(fileInput.files[0]);
 }
 
+// Helper function to convert ArrayBuffer to Base64
+function arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
 
 function changeFontFamily() {
     var fontFamilySelect = document.getElementById('font-family-select');
@@ -335,12 +349,139 @@ function changeFontFamily() {
 document.addEventListener('DOMContentLoaded', changeFontFamily());
 
 
+//to cntrol screeshot scroll problem 
+const scrollContainer = document.getElementById('content_page');
+const lineSpacingInput = document.getElementById('line-spacing-input');
+
+// Function to get the scroll step value
+function getScrollStep() {
+    const value = parseInt(lineSpacingInput.value, 10);
+    return isNaN(value) ? 26 : value; // Default step of 26 if input is invalid
+}
+
+// Function to get the effective scrollable height, considering margin
+function getEffectiveScrollableHeight() {
+    const containerMarginTop = parseInt(window.getComputedStyle(scrollContainer).marginTop, 10) || 0;
+    const containerHeight = scrollContainer.clientHeight;
+    const maxScroll = scrollContainer.scrollHeight - containerHeight;
+    
+    return maxScroll - containerMarginTop;
+}
+
+// Function to check if the new scroll position is valid
+function isValidScrollPosition(newScrollTop) {
+    const effectiveHeight = getEffectiveScrollableHeight();
+    return newScrollTop >= 0 && newScrollTop <= effectiveHeight;
+}
+
+// Function to scroll by specific pixels and ensure boundaries are respected
+function scrollByPixels(pixels) {
+    const newScrollTop = scrollContainer.scrollTop + pixels;
+    if (isValidScrollPosition(newScrollTop)) {
+        scrollContainer.scrollTop = newScrollTop;
+    }
+}
+
+// Function to handle scroll input and enforce bounds for all events
+function handleScrollInput(delta) {
+    const newScrollTop = scrollContainer.scrollTop + delta;
+    if (isValidScrollPosition(newScrollTop)) {
+        scrollByPixels(delta);
+    }
+}
+
+// Handle wheel scrolling (mouse and touchpad)
+scrollContainer.addEventListener('wheel', function(event) {
+    event.preventDefault();
+    
+    let deltaY = event.deltaY;
+    
+    // Firefox uses "lines" as deltaMode in some cases, convert to pixels
+    if (event.deltaMode === 1) { // deltaMode 1 means "lines", so we convert it to pixels
+        deltaY *= 16; // Approximate height of a line in pixels
+    }
+
+    const delta = (deltaY > 0 ? getScrollStep() : -getScrollStep());
+    handleScrollInput(delta);
+});
+
+// Handle keyboard scrolling
+scrollContainer.addEventListener('keydown', function(event) {
+    let delta = 0;
+    const scrollStep = getScrollStep(); // Get the scroll step value
+
+    switch (event.key) {
+        case 'ArrowDown':
+            delta = scrollStep; // Scroll down by the defined step
+            break;
+        case 'ArrowUp':
+            delta = -scrollStep; // Scroll up by the defined step
+            break;
+        case 'PageDown':
+            delta = scrollStep * 3; // Larger scroll for page down
+            break;
+        case 'PageUp':
+            delta = -scrollStep * 3; // Larger scroll for page up
+            break;
+        default:
+            return; // Ignore irrelevant keys
+    }
+
+    event.preventDefault();
+    handleScrollInput(delta);
+});
+
+// Handle scroll event for dragging the scrollbar
+scrollContainer.addEventListener('scroll', function() {
+    const scrollStep = getScrollStep(); // Get the scroll step value
+    const currentScrollTop = scrollContainer.scrollTop;
+
+    // Calculate nearest step position
+    const nearestStep = Math.round(currentScrollTop / scrollStep) * scrollStep;
+
+    // Only adjust if current scroll position is not aligned with the step
+    if (currentScrollTop !== nearestStep) {
+        // Adjust to the nearest valid position
+        const adjustment = nearestStep - currentScrollTop;
+        
+        // Check if the adjustment will keep within bounds
+        if (isValidScrollPosition(currentScrollTop + adjustment)) {
+            scrollByPixels(adjustment);
+        } else {
+            // If the adjustment exceeds bounds, snap back to the nearest valid position
+            const snapBackAdjustment = currentScrollTop > nearestStep ? -((currentScrollTop % scrollStep) + (scrollStep - (currentScrollTop % scrollStep))) : -(currentScrollTop % scrollStep);
+            if (isValidScrollPosition(currentScrollTop + snapBackAdjustment)) {
+                scrollByPixels(snapBackAdjustment);
+            }
+        }
+    }
+});
+
+// Handle touch events for mobile
+let touchStartY = 0;
+scrollContainer.addEventListener('touchstart', function(event) {
+    touchStartY = event.touches[0].clientY;
+});
+
+scrollContainer.addEventListener('touchmove', function(event) {
+    const touchEndY = event.touches[0].clientY;
+    const deltaY = touchStartY - touchEndY;
+
+    if (Math.abs(deltaY) > 10) { // Only scroll if the movement is significant
+        event.preventDefault();
+        const delta = (deltaY > 0 ? getScrollStep() : -getScrollStep());
+        handleScrollInput(delta);
+    }
+    touchStartY = touchEndY;
+});
+
+
 
 
 
 
         var imageQueue = []; // Array to store generated images
-        var quality = 3.0; // Initial quality value
+        var quality = 5.0; // Initial quality value
 
         function changeQuality() {
             var qualityInput = document.getElementById('quality-input').value;
@@ -362,7 +503,8 @@ document.addEventListener('DOMContentLoaded', changeFontFamily());
                 // Remove the text element
                 textElement.remove();
             }
-            var containerWrapper = document.getElementById('heading_page');
+            var containerWrapper = document.getElementById('shadow-effect');
+            containerWrapper.style.border = 'none';
             var imageQueueContainer = document.getElementById('images-store-container');
 
             html2canvas(containerWrapper, { scale: quality }).then(function (canvas) {
@@ -435,6 +577,7 @@ document.addEventListener('DOMContentLoaded', changeFontFamily());
 
                 // Add a shadow effect to the image container
                 imageContainer.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.5)';
+                containerWrapper.style.border = "1px solid black";
             });
         }
 
