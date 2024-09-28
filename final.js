@@ -483,11 +483,35 @@ scrollContainer.addEventListener('touchmove', function(event) {
         var imageQueue = []; // Array to store generated images
         var quality = 5.0; // Initial quality value
 
-        function changeQuality() {
-            var qualityInput = document.getElementById('quality-input').value;
-            quality = parseFloat(qualityInput) || 1.0;
-        }
+        // Global variable to track if the alert has been shown
+let highQualityAlertShown = false;
 
+function changeQuality() {
+    var qualityInput = document.getElementById('quality-input').value;
+    var quality = parseFloat(qualityInput) || 1.0;
+
+    // Check if the quality value exceeds the maximum limit
+    if (quality > 20) {
+        alert('Maximum quality is 20.');
+        quality = 20; // Set quality to maximum allowed value
+        highQualityAlertShown = false; // Reset the flag when exceeding max quality
+    } 
+    // Check if the quality value is high
+    else if (quality > 5) {
+        if (!highQualityAlertShown) { // Show alert only once
+            alert('High quality may take generating image up to 1 minute.');
+            highQualityAlertShown = true; // Set the flag to true after showing the alert
+        }
+    } else {
+        // Reset the flag if the quality is 5 or lower
+        highQualityAlertShown = false;
+    }
+
+    // Optional: Update quality in a global or higher scope variable if needed
+    // qualityVariable = quality; // Uncomment and define qualityVariable elsewhere if needed
+}
+
+        
 
         function generateAndPreview() {
 
@@ -640,53 +664,69 @@ scrollContainer.addEventListener('touchmove', function(event) {
         }
         
         function generatePDF() {
-            // Create a new jsPDF instance
-            var { jsPDF } = jspdf;
-            var pdf = new jsPDF({
-                orientation: 'landscape', // Set the orientation to landscape
-                unit: 'px', // Use pixels as the unit
-                format: 'a4' // Set the format to A4
-            });
+            // Check if there are any images in the imageQueue
+            if (imageQueue.length === 0) {
+                alert("There are no images to generate a PDF. Please add images before generating.");
+                return; // Exit the function if there are no images
+            }
         
-            var pageWidth = pdf.internal.pageSize.getWidth();
-            var pageHeight = pdf.internal.pageSize.getHeight();
+            // Show the loader before starting the PDF generation
+            document.getElementById('loader').style.display = 'block';
         
-            // Loop through each image in the imageQueue
-            imageQueue.forEach(function (image, index) {
-                // Add a new page for each image
-                if (index > 0) {
-                    pdf.addPage();
-                }
+            // Delay the PDF generation by a few milliseconds to allow the loader to show up
+            setTimeout(function () {
+                // Create a new jsPDF instance
+                var { jsPDF } = jspdf;
+                var pdf = new jsPDF({
+                    orientation: 'landscape', // Set the orientation to landscape
+                    unit: 'px', // Use pixels as the unit
+                    format: 'a4' // Set the format to A4
+                });
         
-                // Calculate aspect ratio and set dimensions
-                var aspectRatio = image.width / image.height;
-                var maxWidth = pageWidth * 0.8; // 80% of the page width
-                var maxHeight = maxWidth / aspectRatio;
+                var pageWidth = pdf.internal.pageSize.getWidth();
+                var pageHeight = pdf.internal.pageSize.getHeight();
         
-                // Check if the image height exceeds the page height
-                if (maxHeight > pageHeight) {
-                    maxHeight = pageHeight;
-                    maxWidth = maxHeight * aspectRatio;
-                }
+                // Loop through each image in the imageQueue
+                imageQueue.forEach(function (image, index) {
+                    // Add a new page for each image
+                    if (index > 0) {
+                        pdf.addPage();
+                    }
         
-                // Calculate x and y positions to center the image
-                var x = (pageWidth - maxWidth) / 2;
-                var y = (pageHeight - maxHeight) / 2;
+                    // Calculate aspect ratio and set dimensions
+                    var aspectRatio = image.width / image.height;
+                    var maxWidth = pageWidth * 0.8; // 80% of the page width
+                    var maxHeight = maxWidth / aspectRatio;
         
-                // Compress the image before adding it to the PDF
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-                canvas.width = image.width;
-                canvas.height = image.height;
-                ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-                var compressedImage = canvas.toDataURL('image/jpeg', 1.0); // 100% quality JPEG
+                    // Check if the image height exceeds the page height
+                    if (maxHeight > pageHeight) {
+                        maxHeight = pageHeight;
+                        maxWidth = maxHeight * aspectRatio;
+                    }
         
-                // Add the image to the PDF with calculated dimensions and positions
-                pdf.addImage(compressedImage, 'JPEG', x, y, maxWidth, maxHeight);
-            });
+                    // Calculate x and y positions to center the image
+                    var x = (pageWidth - maxWidth) / 2;
+                    var y = (pageHeight - maxHeight) / 2;
         
-            // Save the PDF
-            pdf.save('document.pdf');
+                    // Compress the image before adding it to the PDF
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    var compressedImage = canvas.toDataURL('image/jpeg', 0.5); // 50% quality JPEG
+        
+                    // Add the image to the PDF with calculated dimensions and positions
+                    pdf.addImage(compressedImage, 'JPEG', x, y, maxWidth, maxHeight);
+                });
+        
+                // Save the PDF
+                pdf.save('document.pdf');
+        
+                // Hide the loader after the PDF is generated
+                document.getElementById('loader').style.display = 'none';
+        
+            }, 0); // Use a timeout to allow the loader to display first
         }
         
 
@@ -734,6 +774,7 @@ function openColorPicker() {
 }
 
 function openDrawingContainer() {
+    alert('Before drawing and adding images to the page, ensure that your page parameters are fixed, like page size and line spacing. Changing these after adding images may distort your page structure');
     document.getElementById('drawing_popup').style.display = 'flex';
     setCanvasSize();
 }
@@ -868,12 +909,71 @@ function setProperties() {
     const floatInput = document.getElementById('floatInput').value;
     const widthInput = document.getElementById('widthInput').value;
     const img = imagesArray[imagesArray.length - 1];
-    img.style.margin = 2+'px';
-    img.style.float = floatInput;
-    img.style.width = widthInput;
+
+    // Line height used for text (ensure this matches the actual line height of the container's text)
+    const lineSpacingInput = document.getElementById('line-spacing-text-input').value;
+const lineHeight = lineSpacingInput ? parseInt(lineSpacingInput) : 26;
+
+    // Function to set the image's width and height, ensuring height is a multiple of line height
+    function adjustImageDimensions() {
+        const outputContainer = document.getElementById('output-inner-container');
+        const containerWidth = outputContainer.clientWidth; // Get the current container width
+        const imgWidthPercent = parseFloat(widthInput); // Convert width input from percentage to a number
+        const imgWidthInPixels = (imgWidthPercent / 100) * containerWidth; // Calculate width in pixels
+        
+        // Get the image's natural aspect ratio (for quality preservation)
+        const aspectRatio = img.naturalWidth / img.naturalHeight;
+
+        // Calculate the image's height based on the aspect ratio and width
+        let imgHeightInPixels = imgWidthInPixels / aspectRatio;
+
+        // Adjust the height to the nearest multiple of the line height
+        imgHeightInPixels = Math.round(imgHeightInPixels / lineHeight) * lineHeight;
+
+        // Check if the calculated width fits in the container
+        if (imgWidthInPixels > containerWidth) {
+            imgWidthInPixels = containerWidth; // Ensure image doesn't overflow container width
+            imgHeightInPixels = imgWidthInPixels / aspectRatio; // Adjust height based on new width
+        }
+
+        // Now check if the calculated height exceeds container height
+        if (imgHeightInPixels > outputContainer.clientHeight) {
+            imgHeightInPixels = outputContainer.clientHeight; // Limit height to container height
+            imgWidthInPixels = imgHeightInPixels * aspectRatio; // Recalculate width based on new height
+        }
+
+        // Ensure the width doesn't exceed the container after height adjustment
+        if (imgWidthInPixels > containerWidth) {
+            imgWidthInPixels = containerWidth; // Set width to container width if it exceeds
+            imgHeightInPixels = imgWidthInPixels / aspectRatio; // Adjust height based on new width
+        }
+
+        // Apply the calculated width and height while preserving the aspect ratio
+        //img.style.maxWidth = `${(imgWidthPercent / 100) * containerWidth}px`; // Set max-width
+        img.style.maxHeight = `${imgHeightInPixels}px`;  // Set max-height with line height multiple
+        img.style.width = 'auto';  // Auto width maintains aspect ratio
+        img.style.height = 'auto'; // Let the height scale naturally
+        img.style.leftMargin='3px'
+        img.style.rightMargin='3px'
+    }
+
+    // Set basic styles for the image
+    img.style.verticalAlign = 'bottom'; // Align the image to the bottom of the line
+    img.style.float = floatInput; // Apply the float value (left, right, or none)
+    img.style.objectFit = 'cover'; // Ensure the image covers its box without distortion
+
+    // Adjust the image dimensions on load
+    adjustImageDimensions();
+
+    // Append the image to the container
     const outputContainer = document.getElementById('output-inner-container');
     outputContainer.appendChild(img);
+
+    // Close the popup
     document.getElementById('popup-output').style.display = 'none';
+
+    // Recalculate dimensions when the window or container resizes
+    window.addEventListener('resize', adjustImageDimensions);
 }
 
 function getPointerPos(e) {
