@@ -172,10 +172,10 @@ padding: 20px;
 }
 .input-boxes {
 display: flex;
-flex-wrap: wrap;
+/* flex-wrap: wrap; */
 justify-content: space-between;
 gap: 2px;
-
+overflow-x: scroll;
 }
 
 .input-box {
@@ -183,7 +183,7 @@ flex: 1;
 padding: 15px;
 
 border-radius: 10px;
-width: 30%;
+min-width:  80%;
 flex-basis: 25%;
 flex-grow: 1;
 background: linear-gradient(to right, #ffffff, #8326da54);
@@ -422,20 +422,22 @@ background-color: #0056b3;
     resize: both;
     overflow: auto;
     scrollbar-width: none;
-    
+    height: 100%;
+    margin-left: 5%;
+    margin-right: 5%;
     
     
 }
 #outer-container{
     border: 2px solid;
     
-/* height: 484px; */
+    height: 85vh;
     display: flex;
     overflow-wrap: anywhere;
     
     flex-wrap: wrap;
     justify-content: space-around;
-    
+    overflow: scroll;
 }
 
 /*button typ2*/
