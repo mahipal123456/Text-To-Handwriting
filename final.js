@@ -652,11 +652,22 @@ function changeQuality() {
 
 
         function downloadImage(image, fileName) {
-            var link = document.createElement('a');
-            link.href = image.src;
-            link.download = fileName;
-            link.click();
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+            
+            canvas.toBlob(function(blob) {
+                var blobURL = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = blobURL;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(blobURL);
+            }, 'image/png');
         }
+
 
         function openImageInNewTab(imageSrc) {
             var newTab = window.open();
