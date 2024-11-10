@@ -665,13 +665,24 @@ function changeQuality() {
             canvas.width = image.width;
             canvas.height = image.height;
             ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-            
+        
             canvas.toBlob(function(blob) {
+                // Creating a blob URL
                 var blobURL = URL.createObjectURL(blob);
+        
+                // Create a link and simulate a user click on it
                 var link = document.createElement('a');
                 link.href = blobURL;
                 link.download = fileName;
+        
+                // For mobile devices: Make sure the link is added to the DOM and user interacts with it
+                document.body.appendChild(link);
+                
+                // Try triggering the click manually
                 link.click();
+                
+                // Cleanup: Remove the link from the DOM and revoke the object URL
+                document.body.removeChild(link);
                 URL.revokeObjectURL(blobURL);
             }, 'image/png');
         }
