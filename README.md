@@ -35,7 +35,7 @@ No installation is required. Simply visit the application URL to start using the
 
 ## License
 
-This project is licensed under a **Proprietary License**. See the [LICENSE.txt](LICENSE.txt) file for full details on usage, restrictions, and permissions.
+This project is licensed under a **Proprietary License**. See the [LICENSE.txt](license.txt) file for full details on usage, restrictions, and permissions.
 
 
 ## Contact
