@@ -33,6 +33,10 @@ No installation is required. Simply visit the application URL to start using the
 - **Web Fonts**: Handwriting fonts
 - **MathJax**: Displaying mathematical notation
 
+## License
+
+This project is licensed under a **Proprietary License**. See the [LICENSE.txt](LICENSE.txt) file for full details on usage, restrictions, and permissions.
+
 
 ## Contact
 For questions or support, please contact me at mahipalkumawat810@gmail.com.
