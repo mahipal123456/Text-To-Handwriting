@@ -108,12 +108,12 @@ body {
   }
 }
 
-  /* Sections */
+   /* Sections */
   section {
-/*     padding: 60px 20px; */
+    padding: 60px 20px;
     /* max-width: 1200px; */
     margin: 0 auto;
-  }
+  } 
 
   section h2 {
     font-size: 2rem;
@@ -1281,7 +1281,7 @@ td, th {
 td {
   min-width: 50px;
   height: auto;
-} */
+} 
 
 /* select, input[type="file"] {
   font-size: 14px;
