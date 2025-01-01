@@ -1286,11 +1286,11 @@ td {
 /* select, input[type="file"] {
   font-size: 14px;
 } */
-.ql-editor{
+/* .ql-editor{
   line-height: 23px !important;
   padding: 0px !important;
-  /* resize: vertical; */
-}
+  resize: vertical;
+} */
 /* Adjust the font sizes for the Quill editor */
 .ql-editor .ql-size-small {
   font-size: 12px !important; /* Small size - 12px */
