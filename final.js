@@ -434,116 +434,219 @@ function changeQuality() {
 
         
 
+// function generateAndPreview() {
+//     // Select the canvas element by its ID
+//     const canvas = document.getElementById('drawing-canvas');
+//     const button = document.getElementById('generate_image');
+    
+//     // Change the button text to "Generating..."
+//     button.textContent = "Generating...";
+//     button.disabled = true; // Disable the button during processing
+
+//     // Set the border to 'none' dynamically
+//     canvas.style.border = 'none';
+
+//     // Perform the shadow effect if the checkbox is checked
+//     const shadowBox = document.getElementById('shadow').checked;
+//     if (shadowBox) {
+//         const randomAngle = Math.floor(Math.random() * 360);
+//         const target = document.getElementById('heading_page');
+//         target.style.background = `linear-gradient(${randomAngle}deg, rgb(0 0 0 / 40%), rgb(0 0 0 / 0%))`;
+//     }
+
+//     var textElement = document.getElementById('images-store-container-text');
+//     if (textElement) {
+//         // Remove the text element
+//         textElement.remove();
+//     }
+
+//     var containerWrapper = document.getElementById('shadow-effect');
+//     var imageQueueContainer = document.getElementById('images-store-container');
+
+//     // Use html2canvas to capture the containerWrapper content
+//     html2canvas(containerWrapper, { scale: quality }).then(function (canvas) {
+//         // Create a new image object from the canvas
+//         var newImage = new Image();
+//         newImage.src = canvas.toDataURL();
+
+//         // Create a container for the new image and its download button
+//         var imageContainer = document.createElement('div');
+//         imageContainer.classList.add('image-container');
+
+//         // Create a cross sign for removing the image
+//         var crossSign = document.createElement('div');
+//         crossSign.textContent = '✖';
+//         crossSign.classList.add('buttontype_2');
+//         crossSign.onclick = function () {
+//             removeImage(imageContainer, newImage);
+//         };
+
+//         // Create a download button for the new image
+//         var downloadButton = document.createElement('button');
+//         downloadButton.textContent = 'Download Image ' + imageQueue.length;
+//         downloadButton.classList.add('buttontype_2');
+//         downloadButton.onclick = function () {
+//             downloadImage(newImage, 'container_image_' + imageQueue.length + '.png');
+//         };
+
+//         // Create a preview image for the new image
+//         var previewImage = new Image();
+//         previewImage.src = canvas.toDataURL();
+//         previewImage.classList.add('preview-image');
+//         previewImage.onclick = function () {
+//             openImageInNewTab(newImage.src);
+//         };
+
+//         // Create a container for the move left and move right buttons
+//         var moveButtonsContainer = document.createElement('div');
+//         moveButtonsContainer.classList.add('button-container');
+
+//         // Create buttons for moving left and right
+//         var moveLeftButton = document.createElement('button');
+//         moveLeftButton.textContent = '←';
+//         moveLeftButton.classList.add('buttontype_2');
+//         moveLeftButton.onclick = function () {
+//             moveImageLeft(imageContainer);
+//         };
+
+//         var moveRightButton = document.createElement('button');
+//         moveRightButton.textContent = '→';
+//         moveRightButton.classList.add('buttontype_2');
+//         moveRightButton.onclick = function () {
+//             moveImageRight(imageContainer);
+//         };
+
+//         // Append the move buttons to the container
+//         moveButtonsContainer.appendChild(moveLeftButton);
+//         moveButtonsContainer.appendChild(moveRightButton);
+
+//         // Append the preview image, move buttons, cross sign, and download button to the container
+//         imageContainer.appendChild(crossSign);
+//         imageContainer.appendChild(previewImage);
+//         imageContainer.appendChild(moveButtonsContainer); // Append the move buttons container
+//         imageContainer.appendChild(downloadButton);
+
+//         // Append the container to the queue container
+//         imageQueueContainer.appendChild(imageContainer);
+
+//         // Add the new image to the queue
+//         imageQueue.push(newImage);
+
+//         // Add a shadow effect to the image container
+//         imageContainer.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.5)';
+        
+//         // Re-enable the button after the image is generated
+//         button.textContent = "Generate Image";
+//         button.disabled = false; // Re-enable the button after processing
+//     });
+
+//     // Set the border back to '1px solid black' after processing
+//     canvas.style.border = '1px solid black';
+// }
 function generateAndPreview() {
     // Select the canvas element by its ID
     const canvas = document.getElementById('drawing-canvas');
     const button = document.getElementById('generate_image');
-    
+
     // Change the button text to "Generating..."
-    button.textContent = "Generating...";
-    button.disabled = true; // Disable the button during processing
+    document.getElementById('loader').style.display = 'block';
 
     // Set the border to 'none' dynamically
     canvas.style.border = 'none';
+    setTimeout(() => {
+        //shadow effect 
+        const shadowBox = document.getElementById('shadow').checked;
+        if (shadowBox) {
+            const randomAngle = Math.floor(Math.random() * 360);
+            const target = document.getElementById('heading_page');
+            target.style.background = `linear-gradient(${randomAngle}deg, rgb(0 0 0 / 40%), rgb(0 0 0 / 0%))`;
+        }
+        var textElement = document.getElementById('images-store-container-text');
+        if (textElement) {
+            // Remove the text element
+            textElement.remove();
+        }
+        var containerWrapper = document.getElementById('shadow-effect');
+        // containerWrapper.style.border = 'none';
+        var imageQueueContainer = document.getElementById('images-store-container');
 
-    // Perform the shadow effect if the checkbox is checked
-    const shadowBox = document.getElementById('shadow').checked;
-    if (shadowBox) {
-        const randomAngle = Math.floor(Math.random() * 360);
-        const target = document.getElementById('heading_page');
-        target.style.background = `linear-gradient(${randomAngle}deg, rgb(0 0 0 / 40%), rgb(0 0 0 / 0%))`;
-    }
+        html2canvas(containerWrapper, { scale: quality }).then(function (canvas) {
+            // Create a new image object
+            var newImage = new Image();
+            newImage.src = canvas.toDataURL();
 
-    var textElement = document.getElementById('images-store-container-text');
-    if (textElement) {
-        // Remove the text element
-        textElement.remove();
-    }
+            // Create a container for the new image and its download button
+            var imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
 
-    var containerWrapper = document.getElementById('shadow-effect');
-    var imageQueueContainer = document.getElementById('images-store-container');
+            // Create a cross sign for removing the image
+            var crossSign = document.createElement('div');
+            crossSign.textContent = '✖';
+            crossSign.classList.add('buttontype_2');
+            crossSign.onclick = function () {
+                removeImage(imageContainer, newImage);
+            };
 
-    // Use html2canvas to capture the containerWrapper content
-    html2canvas(containerWrapper, { scale: quality }).then(function (canvas) {
-        // Create a new image object from the canvas
-        var newImage = new Image();
-        newImage.src = canvas.toDataURL();
+            // Create a download button for the new image
+            var downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Download Image ' + imageQueue.length;
+            downloadButton.classList.add('buttontype_2');
+            downloadButton.onclick = function () {
+                downloadImage(newImage, 'container_image_' + imageQueue.length + '.png');
+            };
 
-        // Create a container for the new image and its download button
-        var imageContainer = document.createElement('div');
-        imageContainer.classList.add('image-container');
+            // Create a preview image for the new image
+            var previewImage = new Image();
+            previewImage.src = canvas.toDataURL();
+            previewImage.classList.add('preview-image');
+            previewImage.onclick = function () {
+                openImageInNewTab(newImage.src);
+            };
 
-        // Create a cross sign for removing the image
-        var crossSign = document.createElement('div');
-        crossSign.textContent = '✖';
-        crossSign.classList.add('buttontype_2');
-        crossSign.onclick = function () {
-            removeImage(imageContainer, newImage);
-        };
+            // Create a container for the move left and move right buttons
+            var moveButtonsContainer = document.createElement('div');
+            moveButtonsContainer.classList.add('button-container');
 
-        // Create a download button for the new image
-        var downloadButton = document.createElement('button');
-        downloadButton.textContent = 'Download Image ' + imageQueue.length;
-        downloadButton.classList.add('buttontype_2');
-        downloadButton.onclick = function () {
-            downloadImage(newImage, 'container_image_' + imageQueue.length + '.png');
-        };
+            // Create buttons for moving left and right
+            var moveLeftButton = document.createElement('button');
+            moveLeftButton.textContent = '←';
+            moveLeftButton.classList.add('buttontype_2');
+            moveLeftButton.onclick = function () {
+                moveImageLeft(imageContainer);
+            };
 
-        // Create a preview image for the new image
-        var previewImage = new Image();
-        previewImage.src = canvas.toDataURL();
-        previewImage.classList.add('preview-image');
-        previewImage.onclick = function () {
-            openImageInNewTab(newImage.src);
-        };
+            var moveRightButton = document.createElement('button');
+            moveRightButton.textContent = '→';
+            moveRightButton.classList.add('buttontype_2');
+            moveRightButton.onclick = function () {
+                moveImageRight(imageContainer);
+            };
 
-        // Create a container for the move left and move right buttons
-        var moveButtonsContainer = document.createElement('div');
-        moveButtonsContainer.classList.add('button-container');
+            // Append the move buttons to the container
+            moveButtonsContainer.appendChild(moveLeftButton);
+            moveButtonsContainer.appendChild(moveRightButton);
 
-        // Create buttons for moving left and right
-        var moveLeftButton = document.createElement('button');
-        moveLeftButton.textContent = '←';
-        moveLeftButton.classList.add('buttontype_2');
-        moveLeftButton.onclick = function () {
-            moveImageLeft(imageContainer);
-        };
+            // Append the preview image, move buttons, cross sign, and download button to the container
+            imageContainer.appendChild(crossSign);
+            imageContainer.appendChild(previewImage);
+            imageContainer.appendChild(moveButtonsContainer); // Append the move buttons container
+            imageContainer.appendChild(downloadButton);
 
-        var moveRightButton = document.createElement('button');
-        moveRightButton.textContent = '→';
-        moveRightButton.classList.add('buttontype_2');
-        moveRightButton.onclick = function () {
-            moveImageRight(imageContainer);
-        };
+            // Append the container to the queue container
+            imageQueueContainer.appendChild(imageContainer);
 
-        // Append the move buttons to the container
-        moveButtonsContainer.appendChild(moveLeftButton);
-        moveButtonsContainer.appendChild(moveRightButton);
+            // Add the new image to the queue
+            imageQueue.push(newImage);
 
-        // Append the preview image, move buttons, cross sign, and download button to the container
-        imageContainer.appendChild(crossSign);
-        imageContainer.appendChild(previewImage);
-        imageContainer.appendChild(moveButtonsContainer); // Append the move buttons container
-        imageContainer.appendChild(downloadButton);
-
-        // Append the container to the queue container
-        imageQueueContainer.appendChild(imageContainer);
-
-        // Add the new image to the queue
-        imageQueue.push(newImage);
-
-        // Add a shadow effect to the image container
-        imageContainer.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.5)';
-        
-        // Re-enable the button after the image is generated
-        button.textContent = "Generate Image";
-        button.disabled = false; // Re-enable the button after processing
-    });
-
-    // Set the border back to '1px solid black' after processing
+            // Add a shadow effect to the image container
+            imageContainer.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.5)';
+            // containerWrapper.style.border = "1px solid black";
+            document.getElementById('loader').style.display = 'none';
+            
+        });
+    }, 1000); 
     canvas.style.border = '1px solid black';
 }
-
 
         function removeImage(imageContainer, image) {
             var index = imageQueue.indexOf(image);

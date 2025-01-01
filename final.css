@@ -198,7 +198,7 @@ body {
     display: grid;
     grid-template-columns: repeat(
       auto-fill,
-      minmax(400px, 1fr)
+      minmax(365px, 1fr)
     ); /* Automatically adjusts columns */
     gap: 20px;
     justify-content: center;
@@ -395,7 +395,7 @@ body {
     display: grid;
     grid-template-columns: repeat(
       auto-fill,
-      minmax(400px, 1fr)
+      minmax(365px, 1fr)
     ); /* Automatically adjusts columns */
     gap: 20px;
     justify-content: center;
